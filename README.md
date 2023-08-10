@@ -5,12 +5,6 @@ Metatron is a reliable and secure platform that allows users to stake their toke
 
 
 
-https://github.com/blockchainacuity/Token-Staking-Investment-Backend/assets/132102310/d41d46fb-5f34-4535-a8c2-d7d7fbebc767
-
-
-[demo website](https://capable-zuccutto-3b71c5.netlify.app/)
-
-
 ## Tech Stack:
 ### React: 
 Metatron's frontend is built using React, a popular JavaScript library for building user interfaces.
