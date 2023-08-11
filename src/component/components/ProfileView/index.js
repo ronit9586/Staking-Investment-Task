@@ -1,4 +1,4 @@
-import react, {useEffect, useState} from 'react';
+import react, {useEffect, useState, useContext} from 'react';
 import axios from 'axios';
 import './index.css';
 import { Row, Col, Button, Form, Input, Checkbox } from 'antd';
@@ -8,7 +8,10 @@ import { MailOutlined ,SafetyOutlined,LockOutlined,TeamOutlined ,EyeTwoTone,EyeI
 import {SERVER_URL} from '../../../constant/env'
 import openNotification from "../notification";
 import setAuthToken from '../../../utils/setAuthToken';
+import { UserContext } from '../../../contexts/userContext'; 
 function ProfileView(props) {
+    const { setUserInfo, setJwtToken, userInfo, jwtToken } = useContext(UserContext);
+
     const [form] = Form.useForm();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,14 +19,14 @@ function ProfileView(props) {
     const [firstname, setFirstName] = useState("");
     const [lastname, setLastName] = useState("");
 
-    useEffect(()=>{
-        let userInfo = JSON.parse(localStorage.getItem('userInfo')) ;
+    useEffect(()=>{ 
+        if(userInfo === null) return;
         console.log(userInfo.email);
         setEmail(userInfo.email);
         setFirstName(userInfo.firstname);
         setLastName(userInfo.lastname);
         form.setFieldsValue({email:userInfo.email,firstname:userInfo.firstname, lastname:userInfo.lastname})
-    },[])
+    },[userInfo])
     function hasErrors(fieldsError) {
         console.log("errer",fieldsError[0].errors.length)
         if(fieldsError[0].errors.length>0)
@@ -35,8 +38,8 @@ function ProfileView(props) {
     
         form.validateFields()
          .then((values) => {
-            setAuthToken(localStorage.jwtToken);
-            let user = JSON.parse(localStorage.userInfo);
+            setAuthToken(jwtToken);
+            let user = userInfo;
             axios.patch(SERVER_URL+`users/update/${user.id}`,{
                 id:user.id,
                 currentpassword:oldpassword,
@@ -47,8 +50,8 @@ function ProfileView(props) {
             }).then(response=>{
                 if(response.data.response){
                     openNotification(4.5,'Success',"Account successfully created!",true, ()=>{props.setRefresh();});
-                    localStorage.setItem("userInfo", JSON.stringify(response.data.data.userInfo));
-                    localStorage.setItem("jwtToken", JSON.stringify(response.data.data.token));
+                    setUserInfo(response.data.data.userInfo);
+                    setJwtToken(response.data.data.token); 
                 } 
                 else{
                     openNotification(4.5,'Fail!',response.data.message,false);

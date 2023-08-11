@@ -1,4 +1,4 @@
-import react, {useState, useEffect} from 'react';
+import react, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import './index.css';
 import { Row, Col, Button, Form, Input, Checkbox } from 'antd';
@@ -7,7 +7,10 @@ import { MailOutlined ,SafetyOutlined,LockOutlined,TeamOutlined ,EyeTwoTone,EyeI
 import setAuthToken from '../../../utils/setAuthToken';
 import {SERVER_URL} from '../../../constant/env'
 import openNotification from "../notification";
+import { UserContext } from '../../../contexts/userContext';
 function ResetPasswordView() {
+    const { setUserInfo, setJwtToken, jwtToken } = useContext(UserContext);
+
     const routeParams = useParams();
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("password");
@@ -17,14 +20,14 @@ function ResetPasswordView() {
     
     useEffect(()=>{
         let url = routeParams.jxt;
-        localStorage.setItem("jwtToken", JSON.stringify(url));
+        setJwtToken(url);
         setToken(url)
       },[])
 
     const reset=()=>{
         return form.validateFields()
                 .then((values) => {
-                  setAuthToken(localStorage.jwtToken);
+                  setAuthToken(jwtToken);
                   axios.patch(SERVER_URL+"users/resetpassword",{
                     email:email,
                     password:password,

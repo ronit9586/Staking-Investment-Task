@@ -8,8 +8,11 @@ import { MailOutlined ,SafetyOutlined,LockOutlined,TeamOutlined ,EyeTwoTone,EyeI
 import {SERVER_URL} from '../../../constant/env'
 import openNotification from "../notification";
 import {MyInfoContext} from '../../Provider/myInfoProvider';
+import { UserContext } from '../../../contexts/userContext';
 
 function RegisterView() {
+    const { setUserInfo, setJwtToken } = useContext(UserContext);
+
     const [form] = Form.useForm();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -64,8 +67,8 @@ function RegisterView() {
                console.log(response.data.message);
              if(response.data.response){
                 openNotification(1.5,'Success',"Account successfully created!",true,()=>setRedirect(true) );
-                localStorage.setItem("userInfo", JSON.stringify(response.data.data.userInfo));
-                localStorage.setItem("jwtToken", JSON.stringify(response.data.data.token));
+                setUserInfo(response.data.data.userInfo);
+                setJwtToken(response.data.data.token);  
 
              } 
              else{

@@ -16,12 +16,14 @@ import ProfileView from '../../components/ProfileView';
 import CustomParticles from '../../components/CustomParticles';
 import Loading from '../../components/Loading';
 import openNotification from '../../components/notification';
+import { UserContext } from '../../../contexts/userContext';
 
 
 
 
 
 function Main() {
+  const { userInfo: userInfoLocal, jwtToken, setUserInfo:setUserInfoLocal, setJwtToken } = useContext(UserContext);
   const [goback, setGoback] = useState(false);
   const [userInfo, setUserInfo] = useState({})
   const [step, setStep] = useState(0);
@@ -33,26 +35,26 @@ function Main() {
 
   useEffect(()=>{
     
-    if(!localStorage.getItem("userInfo") && !localStorage.getItem("jwtToken"))
+    if(!userInfoLocal && jwtToken)
       setGoback(true);
     else
-      setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
+      setUserInfo(userInfoLocal);
     
     data.checkedWallet().then((result)=>{
       if(result == 0)
-        openNotification(null,"Invalid wallet address", `Switch your TronLink account, your wallet address is ${JSON.parse(localStorage.getItem("userInfo")).base58}`, false, null);
+        openNotification(null,"Invalid wallet address", `Switch your TronLink account, your wallet address is ${userInfoLocal.base58}`, false, null);
       if(result == -1)
         openNotification(null,"TronLink not detected", `please connect TronLink`, false, null); 
     });
 
     data.setRefresh(true);
-  },[])
+  },[userInfoLocal, jwtToken])
   
   useEffect(()=>{
     if(data.error){
       openNotification(1.5,"Failed", "you are not permitted! please login again.", false, ()=>{
-        localStorage.removeItem("userInfo");
-        localStorage.removeItem("jwtToken");
+        setUserInfo(null);
+        setJwtToken(null);
         setGoback(true);
         data.setError(false);
       })   

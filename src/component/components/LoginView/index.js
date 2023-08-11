@@ -8,8 +8,11 @@ import { MailOutlined ,SafetyOutlined,LockOutlined,TeamOutlined ,EyeTwoTone,EyeI
 import {SERVER_URL} from '../../../constant/env'
 import openNotification from "../notification";
 import {MyInfoContext} from '../../Provider/myInfoProvider';
+import { UserContext } from '../../../contexts/userContext';
 
 function LoginView() {
+    const { setUserInfo, setJwtToken } = useContext(UserContext);
+
     const [form] = Form.useForm();
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -34,8 +37,8 @@ function LoginView() {
                 if(response.data.response){
                     
                     // setMessage({style:'text-green-500',val:true,data:"Successful! Welcome to our site."});
-                    localStorage.setItem("userInfo", JSON.stringify(response.data.data.userInfo));
-                    localStorage.setItem("jwtToken", JSON.stringify(response.data.data.token));
+                    setUserInfo(response.data.data.userInfo);
+                    setJwtToken(response.data.data.token);
 
                     
                     openNotification(1.5,'Successful','Welcome to MetaTron.', true,()=>setRedirect(true));

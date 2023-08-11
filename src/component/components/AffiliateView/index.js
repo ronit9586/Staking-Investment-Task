@@ -1,11 +1,15 @@
-import react, {useState} from 'react';
+import react, {useState, useContext} from 'react';
 import axios from 'axios';
 import './index.css';
 import { Row, Col, Typography } from 'antd';
+import { UserContext } from '../../../contexts/userContext';
+import { AffiliateContext } from '../../../contexts/affiliateContext';
 const { Paragraph } = Typography;
 
 function AffiliateView(props) {
-   
+  const { userInfo } = useContext(UserContext);
+  const { affiliate } = useContext(AffiliateContext);
+  
     return (
         
         <Row className='min-h-screen'>
@@ -26,7 +30,7 @@ function AffiliateView(props) {
                           </Col>
                           <Col span={24} className='pt-4'>
                             <p className='text-yellow-200 mb-2'>Your referral link</p>
-                            <Paragraph copyable className='text-white border border-white border-dotted p-4'>{`https://metatron.biz/${JSON.parse(localStorage.userInfo).id}/${JSON.parse(localStorage.userInfo).wallet}/${JSON.parse(localStorage.userInfo).base58}`}</Paragraph>
+                            <Paragraph copyable className='text-white border border-white border-dotted p-4'>{`https://metatron.biz/${userInfo.id}/${userInfo.wallet}/${userInfo.base58}`}</Paragraph>
                           </Col>
                       </Row>
                     </Col>
